@@ -1,9 +1,43 @@
-from multiprocessing import context
-from pickletools import markobject
+
 from django.shortcuts import redirect, render
 from django.http import HttpResponse
+from django.urls import reverse
 from leads.forms.forms import LeadForm,LeadModelForm
 from leads.models import Lead,Agent
+from django.views.generic import DeleteView,UpdateView,ListView,DetailView,CreateView
+
+
+#class based views
+class LeadListView(ListView):
+   template_name= 'lead_list.html'
+   queryset= Lead.objects.all()
+   context_object_name= 'lead'
+
+class LeadDetailView(DetailView):
+   template_name = 'lead_detail.html'
+   queryset = Lead.objects.all()
+   context_object_name = 'lead'
+
+class LeadCreateView(CreateView):
+   template_name = 'lead_create.html'
+   form_class = LeadModelForm
+   
+   def get_success_url(self) -> str:
+       return reverse("leads:lead-list")
+
+class LeadUpdateView(UpdateView):
+   template_name = 'lead_update.html'
+   form_class = LeadModelForm
+   
+   def get_success_url(self) -> str:
+       return reverse("leads:lead-list")
+
+class LeadDeleteView(DeleteView):
+   template_name = 'lead_delete.html'
+   form_class = LeadModelForm
+   
+   def get_success_url(self) -> str:
+       return reverse("leads:lead-list")
 
 # Create your views here.
 def lead_list(request):
